@@ -125,6 +125,7 @@ namespace AllProgrammic\Component\Redis;
  */
 class Client
 {
+    const CRLF             = "\r\n";
     const TYPE_STRING      = 'string';
     const TYPE_LIST        = 'list';
     const TYPE_SET         = 'set';
@@ -1168,7 +1169,7 @@ class Client
                 throw new Exception('Lost connection to Redis server.', Exception::CODE_DISCONNECTED);
             }
         }
-        $reply = rtrim($reply, CRLF);
+        $reply = rtrim($reply, self::CRLF);
         #echo "> $name: $reply\n";
         $replyType = substr($reply, 0, 1);
         switch ($replyType) {
@@ -1237,7 +1238,7 @@ class Client
                 $response = count($keys) ? array_combine($keys, $values) : [];
                 break;
             case 'info':
-                $lines = explode(CRLF, trim($response, CRLF));
+                $lines = explode(self::CRLF, trim($response, self::CRLF));
                 $response = [];
                 foreach ($lines as $line) {
                     if (! $line || substr($line, 0, 1) == '#') {
@@ -1265,12 +1266,12 @@ class Client
      */
     private static function prepareCommand($args)
     {
-        return sprintf('*%d%s%s%s', count($args), CRLF, implode(array_map(array('self', 'map'), $args), CRLF), CRLF);
+        return sprintf('*%d%s%s%s', count($args), self::CRLF, implode(array_map(array('self', 'map'), $args), self::CRLF), self::CRLF);
     }
 
     private static function map($arg)
     {
-        return sprintf('$%d%s%s', strlen($arg), CRLF, $arg);
+        return sprintf('$%d%s%s', strlen($arg), self::CRLF, $arg);
     }
 
     /**
