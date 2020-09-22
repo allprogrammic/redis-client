@@ -456,7 +456,7 @@ class Client
             $this->setReadTimeout($this->readTimeout);
         }
 
-        if ($this->authPassword) {
+        if (!empty($this->authPassword)) {
             $this->auth($this->authPassword);
         }
         if ($this->selectedDb !== 0) {
